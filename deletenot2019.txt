@@ -1,0 +1,21 @@
+Sub deletenot2019()
+    On Error Resume Next
+    
+    Dim ws As Worksheet
+    Dim lastRow As Long, i As Long
+
+    Set ws = ThisWorkbook.Sheets("Sheet1")
+    
+
+    'the last row with data in column G
+    lastRow = ws.Cells(ws.Rows.Count, "G").End(xlUp).Row
+
+    ' Loop through rows in reverse order
+    For i = lastRow To 2 Step -1
+        If ws.Cells(i, "G").Value <> 2019 Then
+            ws.Rows(i).Delete
+        End If
+    Next i
+
+    On Error GoTo 0
+End Sub

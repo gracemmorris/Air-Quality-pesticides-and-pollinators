@@ -1,0 +1,40 @@
+Sub SumMatchingONCoordinates()
+    Dim wsSource As Worksheet, wsTarget As Worksheet
+    Dim lastRow As Long, i As Long
+    Dim uniqueValues As Collection
+    Dim item As Variant, totalSum As Double
+    
+    Set wsSource = ThisWorkbook.Sheets("Sheet1")
+    
+    ' create a new worksheet
+    Set wsTarget = Sheets.Add(After:=Sheets(Sheets.Count))
+    wsTarget.Name = "SummarySheet"
+    
+    ' the last row with data in column E
+    lastRow = wsSource.Cells(wsSource.Rows.Count, "E").End(xlUp).Row
+    
+    ' collect unique values from column E
+    Set uniqueValues = New Collection
+    
+    ' Loop through column E to collect unique values
+    On Error Resume Next
+    For i = 2 To lastRow ' Assuming data starts from row 2
+        uniqueValues.Add wsSource.Cells(i, "E").Value, CStr(wsSource.Cells(i, "E").Value)
+    Next i
+    On Error GoTo 0
+    
+    ' calculate the sum for each unique value
+    For Each item In uniqueValues
+        totalSum = 0 ' Reset sum for each unique value
+        For i = 2 To lastRow
+            If wsSource.Cells(i, "E").Value = item Then
+                totalSum = totalSum + wsSource.Cells(i, "Q").Value
+            End If
+        Next i
+        Dim nextRow As Long
+        nextRow = wsTarget.Cells(wsTarget.Rows.Count, "A").End(xlUp).Row + 1
+        ' write to new worksheet
+        wsTarget.Cells(nextRow, "A").Value = item
+        wsTarget.Cells(nextRow, "B").Value = totalSum
+    Next item
+End Sub
